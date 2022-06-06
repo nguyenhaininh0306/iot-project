@@ -36,7 +36,7 @@ const Chart = () => {
     })
   }, [])
 
-  const dataDB = dataTemp.slice([dataTemp.length - 20], [dataTemp.length])
+  const dataDB = dataTemp.slice([dataTemp.length - 21], [dataTemp.length - 1])
 
   var data = {
     labels: dataDB?.map((x) => x.time),

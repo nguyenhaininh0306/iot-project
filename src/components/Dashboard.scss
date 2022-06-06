@@ -22,6 +22,11 @@
         padding: 15px;
         line-height: 40px;
         border-radius: 5px;
+        .temp-title {
+          font-weight: bold;
+          font-size: 24px;
+          text-align: center;
+        }
       }
 
       .date {
@@ -31,6 +36,17 @@
         padding: 15px;
         line-height: 40px;
         border-radius: 5px;
+
+        .date-title {
+          font-weight: bold;
+          font-size: 24px;
+          text-align: center;
+        }
+
+        .time-value {
+          display: flex;
+          gap: 5px;
+        }
       }
     }
 

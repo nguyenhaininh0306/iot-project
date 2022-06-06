@@ -8,12 +8,35 @@ import { set, ref, onValue } from 'firebase/database'
 import moment from 'moment-timezone'
 import './Dashboard.scss'
 import Chart from './Chart/Chart'
+import Clock from './Clock'
 
 const Dashboard = () => {
-  const [statusLight1, setStatusLight1] = useState(false)
-  const [statusLight2, setStatusLight2] = useState(false)
-  const [statusLight3, setStatusLight3] = useState(false)
-  const [statusFan, setStatusFan] = useState(false)
+  const status1 = onValue(ref(db, 'IOT-DEVICES/led1'), (snapshot) => {
+    const data = snapshot.val().status
+    return data
+  })
+
+  const status2 = onValue(ref(db, 'IOT-DEVICES/led2'), (snapshot) => {
+    const data = snapshot.val().status
+    return data
+  })
+
+  const status3 = onValue(ref(db, 'IOT-DEVICES/led2'), (snapshot) => {
+    const data = snapshot.val().status
+    return data
+  })
+
+  const fanS = onValue(ref(db, 'IOT-DEVICES/fan'), (snapshot) => {
+    const data = snapshot.val().status
+    return data
+  })
+
+  const [statusLight1, setStatusLight1] = useState(status1 || false)
+  const [statusLight2, setStatusLight2] = useState(status2 || false)
+  const [statusLight3, setStatusLight3] = useState(status3 || false)
+  const [statusFan, setStatusFan] = useState(fanS || false)
+  const [temp, setTemp] = useState('')
+  const [hum, setHum] = useState('')
 
   let timeZone = moment.tz('Asia/Ho_Chi_Minh')
   let date = timeZone.format('DD/MM/YYYY')
@@ -25,19 +48,8 @@ const Dashboard = () => {
       status: checked,
       time: dateTime,
     })
+    setStatusLight1(checked)
   }
-
-  useEffect(() => {
-    onValue(ref(db, 'IOT-DEVICES/led1'), (snapshot) => {
-      const data = snapshot.val().status
-      setStatusLight1(data)
-    })
-
-    set(ref(db, 'IOT-DEVICES/led1'), {
-      status: statusLight1,
-      time: dateTime,
-    })
-  }, [statusLight1])
 
   const onChangeToggleLight2 = (checked) => {
     set(ref(db, 'IOT-DEVICES/led2'), {
@@ -47,18 +59,6 @@ const Dashboard = () => {
     setStatusLight2(checked)
   }
 
-  useEffect(() => {
-    onValue(ref(db, 'IOT-DEVICES/led2'), (snapshot) => {
-      const data = snapshot.val().status
-      setStatusLight2(data)
-    })
-
-    set(ref(db, 'IOT-DEVICES/led2'), {
-      status: statusLight2,
-      time: dateTime,
-    })
-  }, [statusLight2])
-
   const onChangeToggleLight3 = (checked) => {
     set(ref(db, 'IOT-DEVICES/led3'), {
       status: checked,
@@ -66,18 +66,6 @@ const Dashboard = () => {
     })
     setStatusLight3(checked)
   }
-
-  useEffect(() => {
-    onValue(ref(db, 'IOT-DEVICES/led3'), (snapshot) => {
-      const data = snapshot.val().status
-      setStatusLight3(data)
-    })
-
-    set(ref(db, 'IOT-DEVICES/led3'), {
-      status: statusLight3,
-      time: dateTime,
-    })
-  }, [statusLight3])
 
   const onChangeToggleFan = (checked) => {
     set(ref(db, 'IOT-DEVICES/fan'), {
@@ -88,16 +76,36 @@ const Dashboard = () => {
   }
 
   useEffect(() => {
+    onValue(ref(db, 'IOT-DEVICES/led1'), (snapshot) => {
+      const data = snapshot.val().status
+      setStatusLight1(data)
+    })
+
+    onValue(ref(db, 'IOT-DEVICES/led2'), (snapshot) => {
+      const data = snapshot.val().status
+      setStatusLight2(data)
+    })
+
+    onValue(ref(db, 'IOT-DEVICES/led3'), (snapshot) => {
+      const data = snapshot.val().status
+      setStatusLight3(data)
+    })
+
     onValue(ref(db, 'IOT-DEVICES/fan'), (snapshot) => {
       const data = snapshot.val().status
       setStatusFan(data)
     })
 
-    set(ref(db, 'IOT-DEVICES/fan'), {
-      status: statusFan,
-      time: dateTime,
+    onValue(ref(db, 'IOT-DEVICES'), (snapshot) => {
+      const data = snapshot.val().temp
+      setTemp(data)
     })
-  }, [statusFan])
+
+    onValue(ref(db, 'IOT-DEVICES'), (snapshot) => {
+      const data = snapshot.val().hum
+      setHum(data)
+    })
+  }, [])
 
   return (
     <div className='dashboard-container'>
@@ -105,18 +113,15 @@ const Dashboard = () => {
         <div className='temp-hum'>
           <div className='temp'>
             <div className='temp-title'>Temp and Hum</div>
-            {/* {dataDevice.map((device, index) => {
-              return ( */}
-            <div>
-              <div className='temp-value'>Temp: {}</div>
-              <div className='hum-value'>Hum: {}</div>
-            </div>
-            {/* )})} */}
+            <div className='temp-value'>Temp: {temp} &#8451; </div>
+            <div className='hum-value'>Hum: {hum} g/m&#179;</div>
           </div>
           <div className='date'>
             <div className='date-title'>Date</div>
             <div className='day-value'>Day: {date}</div>
-            <div className='time-value'>Time: {time}</div>
+            <div className='time-value'>
+              Time: <Clock />
+            </div>
           </div>
         </div>
 
@@ -129,7 +134,7 @@ const Dashboard = () => {
               <div className='light-title'>Light 1</div>
               <div className='toggle'>
                 <Switch
-                  defaultChecked={statusLight1}
+                  checked={statusLight1}
                   onChange={onChangeToggleLight1}
                 />
               </div>
@@ -177,6 +182,7 @@ const Dashboard = () => {
         </div>
 
         <div className='chart'>
+          <h1>Realtime Temperature</h1>
           <Chart />
         </div>
       </div>

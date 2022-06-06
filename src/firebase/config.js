@@ -2,14 +2,14 @@ import { initializeApp } from 'firebase/app'
 import { getDatabase } from 'firebase/database'
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyBtvDsDRvUXAGexWcTljuhEYLE3rUlELlk',
-  authDomain: 'iot-project-3c354.firebaseapp.com',
-  databaseURL: 'https://iot-project-3c354-default-rtdb.firebaseio.com',
-  projectId: 'iot-project-3c354',
-  storageBucket: 'iot-project-3c354.appspot.com',
-  messagingSenderId: '247184102341',
-  appId: '1:247184102341:web:e37f258aa38d109ffcf1ac',
-  measurementId: 'G-7F2ZFMSW7Y',
+  apiKey: 'AIzaSyC2Z_z9lKwmLXNXt4zHXaQE35i6JXT9B-g',
+  authDomain: 'project-iot-a320a.firebaseapp.com',
+  databaseURL: 'https://project-iot-a320a-default-rtdb.firebaseio.com',
+  projectId: 'project-iot-a320a',
+  storageBucket: 'project-iot-a320a.appspot.com',
+  messagingSenderId: '121224023431',
+  appId: '1:121224023431:web:52ff19e058299de3a11722',
+  measurementId: 'G-3MVYYRPQM1',
 }
 
 const app = initializeApp(firebaseConfig)
